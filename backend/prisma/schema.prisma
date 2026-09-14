@@ -1,0 +1,73 @@
+// Sistema de Mantenimiento - Esquema de datos
+// Como la base fue creada con utf8mb4_spanish_ci, las tablas la heredan como collation por defecto.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  ADMIN
+  TECNICO
+}
+
+enum EstadoOrden {
+  PENDIENTE
+  EN_PROGRESO
+  COMPLETADA
+  CANCELADA
+}
+
+enum EstadoEquipo {
+  OPERATIVO
+  EN_MANTENIMIENTO
+  FUERA_DE_SERVICIO
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  email     String   @unique
+  password  String
+  rol       Role     @default(TECNICO)
+  ordenes   Orden[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Equipo {
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  codigo     String   @unique
+  ubicacion  String?
+  estado     EstadoEquipo @default(OPERATIVO)
+  ordenes    Orden[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([estado])
+}
+
+model Orden {
+  id           Int          @id @default(autoincrement())
+  tipo         String
+  descripcion  String
+  estado       EstadoOrden  @default(PENDIENTE)
+  fechaProgramada DateTime
+  fechaRealizada DateTime?
+  comentario   String?
+  usuarioId    Int
+  equipoId     Int
+  usuario      User    @relation(fields: [usuarioId], references: [id])
+  equipo       Equipo  @relation(fields: [equipoId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([estado])
+  @@index([usuarioId])
+  @@index([equipoId])
+}
