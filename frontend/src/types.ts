@@ -9,6 +9,15 @@ export interface User {
   rol: Rol
 }
 
+export interface Usuario {
+  id: number
+  nombre: string
+  email: string
+  rol: Rol
+  createdAt: string
+  cantidadOrdenes: number
+}
+
 export interface Equipo {
   id: number
   nombre: string

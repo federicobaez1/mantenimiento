@@ -4,15 +4,17 @@ import { useAuth } from './context/useAuth'
 import Login from './pages/Login'
 import Equipos from './pages/Equipos'
 import Ordenes from './pages/Ordenes'
+import Usuarios from './pages/Usuarios'
 
 function ProtectedRoutes() {
-  const { token } = useAuth()
+  const { token, user } = useAuth()
   if (!token) return <Navigate to="/login" replace />
-  return <Layout />
+  return <Layout isAdmin={user?.rol === 'ADMIN'} />
 }
 
 export default function App() {
-  const { token } = useAuth()
+  const { token, user } = useAuth()
+  const isAdmin = user?.rol === 'ADMIN'
 
   return (
     <Routes>
@@ -20,6 +22,7 @@ export default function App() {
       <Route element={<ProtectedRoutes />}>
         <Route path="/equipos" element={<Equipos />} />
         <Route path="/ordenes" element={<Ordenes />} />
+        {isAdmin && <Route path="/usuarios" element={<Usuarios />} />}
       </Route>
       <Route path="*" element={<Navigate to={token ? '/equipos' : '/login'} replace />} />
     </Routes>

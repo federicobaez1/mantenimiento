@@ -18,6 +18,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu'
 import BuildIcon from '@mui/icons-material/Build'
 import AssignmentIcon from '@mui/icons-material/Assignment'
+import PeopleIcon from '@mui/icons-material/People'
 import { useAuth } from '../context/useAuth'
 
 const DRAWER_WIDTH = 240
@@ -29,11 +30,16 @@ const navItems = [
 
 interface LayoutProps {
   children?: React.ReactNode
+  isAdmin?: boolean
 }
 
 export default function Layout(_props: LayoutProps) {
   const { user, logout } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const items = _props.isAdmin
+    ? [...navItems, { to: '/usuarios', label: 'Usuarios', icon: <PeopleIcon /> }]
+    : navItems
 
   const drawer = (
     <Box>
@@ -44,7 +50,7 @@ export default function Layout(_props: LayoutProps) {
       </Toolbar>
       <Divider />
       <List>
-        {navItems.map(({ to, label, icon }) => (
+        {items.map(({ to, label, icon }) => (
           <ListItemButton
             key={to}
             component={NavLink}
