@@ -43,6 +43,14 @@ export interface Orden {
   equipo: Pick<Equipo, 'id' | 'nombre' | 'codigo'>
 }
 
+export interface Resumen {
+  totalEquipos: number
+  totalEnMantenimiento: number
+  totalOrdenes: number
+  ordenesPorEstado: Record<EstadoOrden, number>
+  proximas: Orden[]
+}
+
 export interface AuthContextValue {
   user: User | null
   token: string | null

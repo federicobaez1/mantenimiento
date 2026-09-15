@@ -16,6 +16,7 @@ import {
   Divider,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
+import HomeIcon from '@mui/icons-material/Home'
 import BuildIcon from '@mui/icons-material/Build'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import PeopleIcon from '@mui/icons-material/People'
@@ -24,8 +25,9 @@ import { useAuth } from '../context/useAuth'
 const DRAWER_WIDTH = 240
 
 const navItems = [
-  { to: '/equipos', label: 'Equipos', icon: <BuildIcon /> },
-  { to: '/ordenes', label: 'Órdenes', icon: <AssignmentIcon /> },
+  { to: '/', label: 'Inicio', icon: <HomeIcon />, end: true },
+  { to: '/equipos', label: 'Equipos', icon: <BuildIcon />, end: false },
+  { to: '/ordenes', label: 'Órdenes', icon: <AssignmentIcon />, end: false },
 ]
 
 interface LayoutProps {
@@ -38,7 +40,7 @@ export default function Layout(_props: LayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const items = _props.isAdmin
-    ? [...navItems, { to: '/usuarios', label: 'Usuarios', icon: <PeopleIcon /> }]
+    ? [...navItems, { to: '/usuarios', label: 'Usuarios', icon: <PeopleIcon />, end: false }]
     : navItems
 
   const drawer = (
@@ -50,11 +52,12 @@ export default function Layout(_props: LayoutProps) {
       </Toolbar>
       <Divider />
       <List>
-        {items.map(({ to, label, icon }) => (
+        {items.map(({ to, label, icon, end }) => (
           <ListItemButton
             key={to}
             component={NavLink}
             to={to}
+            end={end}
             sx={{
               '&.active': {
                 backgroundColor: 'primary.main',

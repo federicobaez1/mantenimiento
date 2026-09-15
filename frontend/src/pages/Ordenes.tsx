@@ -74,6 +74,8 @@ export default function Ordenes() {
 
   const [ordenes, setOrdenes] = useState<Orden[]>([])
   const [equipos, setEquipos] = useState<Equipo[]>([])
+  const [filtroEstado, setFiltroEstado] = useState<EstadoOrden | ''>('')
+  const [filtroEquipoId, setFiltroEquipoId] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -166,6 +168,12 @@ export default function Ordenes() {
     }
   }
 
+  const filtered = ordenes.filter(
+    (o) =>
+      (!filtroEstado || o.estado === filtroEstado) &&
+      (!filtroEquipoId || o.equipoId === Number(filtroEquipoId)),
+  )
+
   return (
     <Box>
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -173,6 +181,39 @@ export default function Ordenes() {
         <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>
           Nueva orden
         </Button>
+      </Stack>
+
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 2 }}>
+        <TextField
+          select
+          size="small"
+          label="Estado"
+          sx={{ minWidth: 180 }}
+          value={filtroEstado}
+          onChange={(e) => setFiltroEstado(e.target.value as EstadoOrden | '')}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          {Object.keys(estadoColor).map((estado) => (
+            <MenuItem key={estado} value={estado}>
+              {estado}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          size="small"
+          label="Equipo"
+          sx={{ minWidth: 220 }}
+          value={filtroEquipoId}
+          onChange={(e) => setFiltroEquipoId(e.target.value)}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          {equipos.map((eq) => (
+            <MenuItem key={eq.id} value={String(eq.id)}>
+              {eq.nombre} ({eq.codigo})
+            </MenuItem>
+          ))}
+        </TextField>
       </Stack>
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
@@ -199,8 +240,12 @@ export default function Ordenes() {
               <TableRow>
                 <TableCell colSpan={7} align="center">No hay órdenes registradas.</TableCell>
               </TableRow>
+            ) : filtered.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} align="center">No hay órdenes que coincidan con los filtros.</TableCell>
+              </TableRow>
             ) : (
-              ordenes.map((o) => (
+              filtered.map((o) => (
                 <TableRow key={o.id} hover>
                   <TableCell>{o.tipo}</TableCell>
                   <TableCell>{o.descripcion}</TableCell>

@@ -7,6 +7,7 @@ import { authRouter } from "./routes/authRoutes.js";
 import { equipoRouter } from "./routes/equipoRoutes.js";
 import { ordenRouter } from "./routes/ordenRoutes.js";
 import { usuarioRouter } from "./routes/usuarioRoutes.js";
+import { resumenRouter } from "./routes/resumenRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { notFound } from "./utils/asyncHandler.js";
 
@@ -23,6 +24,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/equipos", equipoRouter);
 app.use("/api/ordenes", ordenRouter);
 app.use("/api/usuarios", usuarioRouter);
+app.use("/api/resumen", resumenRouter);
 
 app.use(notFound);
 app.use(errorHandler);

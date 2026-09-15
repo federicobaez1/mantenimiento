@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import { useAuth } from './context/useAuth'
 import Login from './pages/Login'
+import Inicio from './pages/Inicio'
 import Equipos from './pages/Equipos'
 import Ordenes from './pages/Ordenes'
 import Usuarios from './pages/Usuarios'
@@ -18,13 +19,14 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/login" element={token ? <Navigate to="/equipos" replace /> : <Login />} />
+      <Route path="/login" element={token ? <Navigate to="/" replace /> : <Login />} />
       <Route element={<ProtectedRoutes />}>
+        <Route path="/" element={<Inicio />} />
         <Route path="/equipos" element={<Equipos />} />
         <Route path="/ordenes" element={<Ordenes />} />
         {isAdmin && <Route path="/usuarios" element={<Usuarios />} />}
       </Route>
-      <Route path="*" element={<Navigate to={token ? '/equipos' : '/login'} replace />} />
+      <Route path="*" element={<Navigate to={token ? '/' : '/login'} replace />} />
     </Routes>
   )
 }

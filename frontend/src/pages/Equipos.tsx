@@ -47,6 +47,7 @@ export default function Equipos() {
   const isAdmin = user?.rol === 'ADMIN'
 
   const [equipos, setEquipos] = useState<Equipo[]>([])
+  const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -125,13 +126,29 @@ export default function Equipos() {
     }
   }
 
+  const term = search.trim().toLowerCase()
+  const filtered = term
+    ? equipos.filter((eq) => eq.nombre.toLowerCase().includes(term) || eq.codigo.toLowerCase().includes(term))
+    : equipos
+
   return (
     <Box>
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        sx={{ justifyContent: 'space-between', alignItems: { sm: 'center' }, mb: 2, gap: 1 }}
+      >
         <Typography variant="h5">Equipos</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>
-          Nuevo equipo
-        </Button>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <TextField
+            size="small"
+            placeholder="Buscar por código o nombre…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>
+            Nuevo equipo
+          </Button>
+        </Stack>
       </Stack>
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
@@ -157,8 +174,12 @@ export default function Equipos() {
               <TableRow>
                 <TableCell colSpan={6} align="center">No hay equipos registrados.</TableCell>
               </TableRow>
+            ) : filtered.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">No se encontraron equipos con «{search}».</TableCell>
+              </TableRow>
             ) : (
-              equipos.map((eq) => (
+              filtered.map((eq) => (
                 <TableRow key={eq.id} hover>
                   <TableCell>{eq.codigo}</TableCell>
                   <TableCell>{eq.nombre}</TableCell>
